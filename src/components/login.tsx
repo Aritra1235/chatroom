@@ -20,9 +20,9 @@ export function LoginComponent() {
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword)
 
-  const handleLoginSubmit = async (e) => {
+  const handleLoginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const formData = new FormData(e.target)
+    const formData = new FormData(e.target as HTMLFormElement)
     const data = Object.fromEntries(formData.entries())
   
     const response = await fetch('/api/login', {
@@ -43,9 +43,9 @@ export function LoginComponent() {
     }
   }
 
-  const handleSignupSubmit = async (e) => {
+  const handleSignupSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const formData = new FormData(e.target)
+    const formData = new FormData(e.target as HTMLFormElement)
     const data = Object.fromEntries(formData.entries())
 
     const response = await fetch('/api/signup', {
