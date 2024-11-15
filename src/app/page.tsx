@@ -1,10 +1,8 @@
-import Image from "next/image";
 import ChatApp from "@/components/chat-app";
-import { NavbarComponent } from "@/components/navbar";
 
 export default function Home() {
 
-  
+
 
 
   return (

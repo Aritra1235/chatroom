@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { LogIn } from 'lucide-react'
 import { ModeToggle } from "./ui/mode-toggle"
 import { useRouter } from "next/navigation"
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useAuth } from "./auth-context"
 
 
