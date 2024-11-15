@@ -1,0 +1,16 @@
+import { LoginComponent } from "@/components/login";
+
+export default function Home() {
+    return (
+      <div className="flex flex-col  font-[family-name:var(--font-geist-sans)]">
+        {/* Navbar spans the full width at the top */}
+            
+        {/* ChatApp is centered and spans at least half the viewport width */}
+        <div className="flex-grow flex items-center justify-center w-full p-8 sm:p-20">
+          <div className="w-full max-w-2xl ">
+            <LoginComponent />
+          </div>
+        </div>
+      </div>
+    );
+  }

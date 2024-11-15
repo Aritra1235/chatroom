@@ -41,9 +41,9 @@ export default function ChatApp() {
   }, [messages])
 
   return (
-    <div className="flex flex-col h-[600px] max-w-md mx-auto border rounded-lg bg-background">
+    <div className="flex flex-col h-full max-w-md mx-auto border rounded-lg bg-background">
       <div className="p-4 border-b">
-        <h2 className="text-lg font-semibold">Chat App</h2>
+        <h2 className="text-lg font-semibold">Chat</h2>
       </div>
       <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
         <div className="space-y-4">
@@ -68,14 +68,14 @@ export default function ChatApp() {
         </div>
       </div>
       <div className="p-4 border-t">
-        <div className="flex">
+        <div className="flex gap-2">
           <Input
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             placeholder="Type your message..."
             onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
           />
-          <Button onClick={handleSendMessage}>
+          <Button variant="outline" onClick={handleSendMessage}>
             <Send />
           </Button>
         </div>
