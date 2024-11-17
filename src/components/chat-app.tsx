@@ -4,8 +4,8 @@ import { useState, useRef, useEffect } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import { Send } from 'lucide-react'
-import '@/components/css/chat.css'
 
 type Message = {
   id: number
@@ -22,7 +22,7 @@ export default function ChatApp() {
     { id: 4, text: "Yes, I did! It was challenging but I learned a lot.", sender: "Sarah", avatar: "/placeholder.svg?height=32&width=32" },
   ])
   const [newMessage, setNewMessage] = useState("")
-  const bottomRef = useRef<HTMLDivElement>(null)
+  const scrollAreaRef = useRef<HTMLDivElement>(null)
 
   const handleSendMessage = () => {
     if (newMessage.trim() !== "") {
@@ -37,15 +37,20 @@ export default function ChatApp() {
   }
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+    if (scrollAreaRef.current) {
+      scrollAreaRef.current.scrollTo({
+        top: scrollAreaRef.current.scrollHeight,
+        behavior: 'smooth',
+      })
+    }
   }, [messages])
 
   return (
-    <div className="flex flex-col h-full max-w-md mx-auto border rounded-lg bg-background">
+    <div className="flex flex-col h-[600px] max-w-md mx-auto border rounded-lg overflow-hidden bg-background">
       <div className="p-4 border-b">
-        <h2 className="text-lg font-semibold">Chat</h2>
+        <h2 className="text-lg font-semibold">Chat App</h2>
       </div>
-      <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
+      <ScrollArea ref={scrollAreaRef} className="flex-grow p-4">
         <div className="space-y-4">
           {messages.map((message) => (
             <div
@@ -64,21 +69,28 @@ export default function ChatApp() {
               </div>
             </div>
           ))}
-          <div ref={bottomRef} />
         </div>
-      </div>
+      </ScrollArea>
       <div className="p-4 border-t">
-        <div className="flex gap-2">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            handleSendMessage()
+          }}
+          className="flex space-x-2"
+        >
           <Input
+            type="text"
+            placeholder="Type a message..."
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
-            placeholder="Type your message..."
-            onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+            className="flex-grow"
           />
-          <Button variant="outline" onClick={handleSendMessage}>
-            <Send />
+          <Button type="submit" size="icon">
+            <Send className="h-4 w-4" />
+            <span className="sr-only">Send</span>
           </Button>
-        </div>
+        </form>
       </div>
     </div>
   )
