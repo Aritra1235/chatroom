@@ -7,6 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Send } from 'lucide-react';
+import { useAuth } from './auth-context';
+import { useRouter } from "next/navigation"
+
 
 type Message = {
   id: number;
@@ -20,19 +23,25 @@ export default function ChatApp() {
   const [newMessage, setNewMessage] = useState("");
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const socket = useRef<ReturnType<typeof io> | null>(null);
+  const { isAuthenticated } = useAuth();
+  const router = useRouter();
 
   useEffect(() => {
-    socket.current = io('', {
-      path: '/api/socket',
-    });
-
-    socket.current.on('message', (message: Message) => {
-      setMessages((prevMessages) => [...prevMessages, message]);
-    });
-
-    return () => {
-      socket.current?.disconnect();
-    };
+    if (isAuthenticated){
+      socket.current = io('', {
+        path: '/api/socket',
+      });
+  
+      socket.current.on('message', (message: Message) => {
+        setMessages((prevMessages) => [...prevMessages, message]);
+      });
+  
+      return () => {
+        socket.current?.disconnect();
+      };
+    } else {
+      router.push('/login');
+    }
   }, []);
 
   const handleSendMessage = () => {
