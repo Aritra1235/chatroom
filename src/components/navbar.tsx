@@ -35,7 +35,7 @@ const Navbar: React.FC = () => {
                         <ModeToggle />
                         <Button variant="link" className="flex items-center space-x-2" onClick={() => router.push('/login')}>
                             <LogIn className="h-4 w-4" />
-                            <span onClick={handleClick}>{isAuthenticated ? 'logout' : 'login'}</span>
+                            <span onClick={handleClick}>{isAuthenticated ? 'Logout' : 'Login'}</span>
                         </Button>
                     </div>
                 </div>

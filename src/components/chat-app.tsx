@@ -1,54 +1,66 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Send } from 'lucide-react'
+import { useState, useEffect, useRef } from 'react';
+import io from 'socket.io-client';
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Send } from 'lucide-react';
 
 type Message = {
-  id: number
-  text: string
-  sender: string
-  avatar: string
-}
+  id: number;
+  text: string;
+  sender: string;
+  avatar: string;
+};
 
 export default function ChatApp() {
-  const [messages, setMessages] = useState<Message[]>([
-    { id: 1, text: "Hey there! How's it going?", sender: "John", avatar: "/placeholder.svg?height=32&width=32" },
-    { id: 2, text: "Hi! I'm doing great, thanks for asking. How about you?", sender: "Sarah", avatar: "/placeholder.svg?height=32&width=32" },
-    { id: 3, text: "I'm doing well too. Did you finish that project you were working on?", sender: "John", avatar: "/placeholder.svg?height=32&width=32" },
-    { id: 4, text: "Yes, I did! It was challenging but I learned a lot.", sender: "Sarah", avatar: "/placeholder.svg?height=32&width=32" },
-  ])
-  const [newMessage, setNewMessage] = useState("")
-  const scrollAreaRef = useRef<HTMLDivElement>(null)
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [newMessage, setNewMessage] = useState("");
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const socket = useRef<ReturnType<typeof io> | null>(null);
+
+  useEffect(() => {
+    socket.current = io('', {
+      path: '/api/socket',
+    });
+
+    socket.current.on('message', (message: Message) => {
+      setMessages((prevMessages) => [...prevMessages, message]);
+    });
+
+    return () => {
+      socket.current?.disconnect();
+    };
+  }, []);
 
   const handleSendMessage = () => {
     if (newMessage.trim() !== "") {
-      setMessages([...messages, {
+      const message = {
         id: messages.length + 1,
         text: newMessage,
         sender: "You",
         avatar: "/placeholder.svg?height=32&width=32"
-      }])
-      setNewMessage("")
+      };
+      socket.current?.emit('message', message);
+      setNewMessage("");
     }
-  }
+  };
 
   useEffect(() => {
     if (scrollAreaRef.current) {
       scrollAreaRef.current.scrollTo({
         top: scrollAreaRef.current.scrollHeight,
         behavior: 'smooth',
-      })
+      });
     }
-  }, [messages])
+  }, [messages]);
 
   return (
     <div className="flex flex-col h-[600px] max-w-md mx-auto border rounded-lg overflow-hidden bg-background">
       <div className="p-4 border-b">
-        <h2 className="text-lg font-semibold">Chat App</h2>
+        <h2 className="text-lg font-semibold">Chat</h2>
       </div>
       <ScrollArea ref={scrollAreaRef} className="flex-grow p-4">
         <div className="space-y-4">
@@ -74,8 +86,8 @@ export default function ChatApp() {
       <div className="p-4 border-t">
         <form
           onSubmit={(e) => {
-            e.preventDefault()
-            handleSendMessage()
+            e.preventDefault();
+            handleSendMessage();
           }}
           className="flex space-x-2"
         >
@@ -93,5 +105,5 @@ export default function ChatApp() {
         </form>
       </div>
     </div>
-  )
+  );
 }
