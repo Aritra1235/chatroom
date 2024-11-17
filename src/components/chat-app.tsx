@@ -26,7 +26,7 @@ export default function ChatApp() {
 
   useEffect(() => {
     if (localStorage.getItem('jsonwebtoken')){
-      socket.current = io(process.env.BACKEND_URL, {
+      socket.current = io('https://chat-api.aritra.ovh', {
         path: '/api/socket',
       });
   
