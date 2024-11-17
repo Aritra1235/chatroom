@@ -6,7 +6,11 @@ let io: IOServer;
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (!io) {
-    const httpServer: HttpServer = res.socket.server as any;
+    if (!res.socket) {
+      res.status(500).send('Socket not found');
+      return;
+    }
+    const httpServer: HttpServer = (res.socket as any).server;
     io = new IOServer(httpServer, {
       path: '/api/socket',
     });
@@ -23,7 +27,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       });
     });
 
-    res.socket.server.io = io;
+    (res.socket as any).server.io = io;
   }
 
   res.end();
