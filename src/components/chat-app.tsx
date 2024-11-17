@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Send } from 'lucide-react';
-import { useAuth } from './auth-context';
 import { useRouter } from "next/navigation"
 
 
@@ -23,12 +22,11 @@ export default function ChatApp() {
   const [newMessage, setNewMessage] = useState("");
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const socket = useRef<ReturnType<typeof io> | null>(null);
-  const { isAuthenticated } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (isAuthenticated){
-      socket.current = io('', {
+    if (localStorage.getItem('jsonwebtoken')){
+      socket.current = io(process.env.BACKEND_URL, {
         path: '/api/socket',
       });
   
